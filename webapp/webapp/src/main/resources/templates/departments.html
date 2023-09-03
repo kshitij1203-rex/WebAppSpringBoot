@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Department Management System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" 
+    integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script> -->
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
+
+
+    <link<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="     
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://kit.fontawesome.com/0faddc1af8.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body >
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <!-- Brand -->
+
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vscode}">DEPARTMENTS</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vscode/allEmployees}">EMPLOYEES</a>
+                </li>
+            </ul>
+        </div>
+    </nav>>
+	<br>
+
+    <div class="container"  >
+
+
+
+		<div class="row">
+			<div class="col-lg-3">
+				<a th:href="@{/vscode/add-entry}" style="margin: 20px 0"  class="btn btn-success btn-sm mb-3">Add New Entry</a>
+
+			</div>
+		</div>
+
+		<div class="card-black">
+
+			<table class="table table-striped table-bordered">
+				<thead class="table-dark">
+					<tr>
+						<th>DEARTMENT ID</th>
+						<th>DEPARTMENT NAME</th>
+						<th>MANAGER NAME</th>
+						<th>CITY</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="department: ${departments}" >
+						<td >
+                            <a class="text-dark text-decoration-none" th:href="@{/vscode/employees(Id=${department.departmentId})}">
+                                <span th:text="${department.departmentId}" style="color: orangered">
+
+                                </span>
+                            </a>
+                        </td>
+                        <td th:text="${department.departmentName}"></td>
+                        <td th:text="${department.managerName}">
+                            <!-- <span th:each="managerName : ${department.managerNames}">
+                                <span th:text="${managerName}"></span><br/>
+                            </span> -->
+                        </td>
+                        <td th:text="${department.city}"></td>
+						<td>
+                            <a th:href="@{/vscode/department(Id=${department.departmentId})}"
+                                class="btn btn-light edit" data-bs-toggle="modal" data-bs-target="#editModal"><i
+                                class="fa-solid fa-pen-to-square" style="color: blue"></i></a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                            <a th:href="@{/vscode/delete(id=${department.departmentId})}" class="btn btn-light delete" 
+                            name="deleteButton" 
+                                data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa-solid fa-trash"
+                                style="color: #ff0000;"></i></a>
+
+							
+
+						</td>
+					</tr>
+				</tbody>
+
+
+			</table>
+		</div>
+
+
+		<div class="modal fade"  id="editModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+            <form th:action="@{/vscode/update}" method="put" th:object="${projectDTO}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+    
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">EDIT ENTRY</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <div class="modal-body">
+    
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Department ID:</label>
+                                <input type="text" class="form-control"  id="IdEdit" name="IdEdit" readonly>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Department Name:</label>
+                                <input type="text" class="form-control" id="nameEdit" name="nameEdit">
+                                <h6 id="deptcheck"></h6>
+                                <span id="lblError" style="color: red"></span>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Manager Name:</label>
+                                <input type="text" class="form-control" id="firstnameEdit" name="firstnameEdit">
+                                <h5 id="managercheck"></h5>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">City:</label>
+                                <input type="text" class="form-control"  id="cityEdit" name="cityEdit">
+                                <h5 id="citycheck"></h5>
+                            </div>
+    
+                        </div>
+    
+                        <div class="modal-footer">
+    
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>    
+                            <button type="submit" class="btn btn-success"  id="submitbtn">save</button>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+    
+        </div>
+<!-- update department -->
+<!-- <script>
+    $(document).ready(function () {
+        $("#submitbtn").click(function () {
+            $.ajax({
+                type: "PUT",
+                url: "/vscode/update/" + departmentId, // Replace with the correct URL
+                data: $("#updateForm").serialize(),
+                success: function (response) {
+                    alert(response); // Display a success message or handle as needed
+                    // Update the department details on the page
+                    updateDepartmentOnPage(departmentId, departmentDTO);
+                    // Close the modal
+                    $("#editModal").modal("hide");
+                },
+                error: function (error) {
+                    alert("Error: " + error.responseText); // Display an error message or handle as needed
+                }
+            });
+        });
+    });
+
+    // Function to update department details on the page
+    function updateDepartmentOnPage(departmentId, updatedDepartment) {
+    // Find the department element on the page using its ID or other identifying information
+    var departmentRow = $("tr[data-department-id='" + departmentId + "']");
+
+    // Update the department details with the updated data
+    departmentRow.find(".department-name").text(updatedDepartment.departmentName);
+    departmentRow.find(".manager-name").text(updatedDepartment.managerName);
+    departmentRow.find(".city").text(updatedDepartment.city);
+}
+</script> -->
+
+
+
+
+
+
+
+
+    
+    
+        <div class="modal" tabindex="-1" id="deleteModal">
+    
+            <div class="modal-dialog">
+                <div class="modal-content">
+    
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+    
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this entry</p>
+                    </div>
+    
+                    <div class="modal-footer">
+                        <!-- <form th:action="@{/vscode/department/delete}" method="post"> -->
+
+                        <!-- <input type="hidden" name="Id" th:value="${department.departmentId}" /> -->
+
+
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <a  class="btn btn-danger" id="delRef">Yes, Delete</a>
+                    <!-- </form> -->
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+<!-- Modal for unable to delete due to existing employees -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">Cannot Delete Department</h5>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" >
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body">
+                <p>This department cannot be deleted as it has associated employees.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Your existing HTML content -->
+
+<script>
+    $(document).ready(function () {
+        var showModal = new URLSearchParams(window.location.search).get('showModal');
+        if (showModal === 'true') {
+            $('#employeeModal').modal('show');
+        }
+    });
+</script>
+    
+    
+    
+
+
+        <script>
+    
+            $('document').ready(function () {
+    
+                $('.table .edit').on('click', function (event) {
+    
+                    event.preventDefault();
+    
+                    var href = $(this).attr('href');
+        
+                    $.get(href, function (department, status) {
+    
+                        $('#IdEdit').val(department.departmentId);
+                        $('#nameEdit').val(department.departmentName);
+                        $('#firstnameEdit').val(department.managerName);
+                        $('#cityEdit').val(department.city);
+                    });
+    
+                    $('#editModal').modal('show');
+                });
+            });
+        </script>
+
+        
+
+
+        <script>
+    
+            $('document').ready(function () {
+                $('.table .delete').on('click', function (event) {
+                    event.preventDefault();
+                    var href = $(this).attr('href');
+                    $('#deleteModal #delRef').attr('href', href);
+                    $('#deleteModal').modal();
+                });
+            });
+        </script>
+
+
+
+
+
+
+        <!-- VALIDATION -->
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        $('#deptcheck').hide();
+        $('#managercheck').hide();
+        $('#citycheck').hide();
+
+        var dept_err = true;
+        var man_err = true;
+        var city_err= true;
+
+        // $('#departmentName').keyup(function(){
+
+        //     departmentname_check();
+        // });
+
+        function departmentname_check(){
+
+            var dept_val = $('#nameEdit').val();
+            
+            if(dept_val.length == ''){
+                $('#deptcheck').show();
+                $('#deptcheck').html("*Department name is Mandatory")
+                $('#deptcheck').focus();
+                $('#deptcheck').css("color","red");
+                dept_err = false;
+                return false;
+            }
+            else{
+                $('#deptcheck').hide();
+            }
+
+        }
+
+        $("#nameEdit").keypress(function (e) {
+        var keyCode = e.keyCode || e.which;
+
+        $("#lblError").html("");
+
+        //Regex for Valid Characters i.e. Alphabets and Numbers.
+        var regex = /^[A-Za-z0-9]+$/;
+
+        //Validate TextBox value against the Regex.
+        var isValid = regex.test(String.fromCharCode(keyCode));
+        if (!isValid) {
+            $("#lblError").html("*only alpha numeric characters allowed.");
+        }
+
+        return isValid;
+    });
+
+
+        $('#submitbtn').click(function(){
+
+            dept_err = true;
+            departmentname_check();
+
+            if(dept_err == true){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+
+        });
+
+    });
+
+</script>
+
+
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+
+    	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+</body>
+
+
+
+</html>

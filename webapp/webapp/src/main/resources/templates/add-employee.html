@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Student Management System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css"
+        integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <!-- Brand -->
+
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vscode}">DEPARTMENTS</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vscode/allEmployees}">EMPLOYEES</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-6 col-sm-6 card">
+                <h1 class="text-center">Add Employee Entry</h1>
+                <hr>
+                <div class="card-body">
+                    <form th:action="@{/vscode/allEmployees}" th:object="${projectDTO}" method="post">
+
+                   
+
+                        <div class="form-group">
+
+                            <div class="form-group">
+                                <label> Employee Id </label>
+
+                                <input type="text" name="manid" th:field="*{manid}" class="form-control" value="${manid}" readonly
+                                placeholder="id" />
+                            
+                
+                            </div>
+
+                            
+                            <div class="form-group">
+                                <label> Department Name </label>
+                     
+
+                                <select class="w-100 btn btn-secondary dropdown-toggle" type="button" id="dropdownList" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <option th:each="departmentName : ${departmentNames}"
+                                     th:value="${departmentName}" th:text="${departmentName}"></option>
+                                </select>
+                           
+                            </div>
+
+ 
+
+                        </div>
+                        <br>
+                            <div class="form-group">
+                            <label> Employee Name </label>
+                            <input type="text" id="EmployeeName" name="EmployeeName" th:field="*{managerName}" class="form-control" placeholder="Enter Employee Name" autocomplete="off" />
+                            <h6 id="deptcheck"></h6>
+                            <span id="lblError" style="color: red"></span>
+                             </div>
+                        <br>
+
+
+                        <div class="box-footer">
+                            <button type="submit" id="submitbtn" class="btn btn-success">Submit</button>
+                            <a  th:href="@{/vscode}" class="btn btn-danger align-items-end">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            $('#deptcheck').hide();
+
+            var dept_err = true;
+
+            function departmentname_check(){
+
+            var dept_val = $('#EmployeeName').val();
+
+            if(dept_val.length == ''){
+                    $('#deptcheck').show();
+                    $('#deptcheck').html("*Employee name is Mandatory")
+                    $('#deptcheck').focus();
+                    $('#deptcheck').css("color","red");
+                    dept_err = false;
+                    return false;
+                }
+                else{
+                    $('#deptcheck').hide();
+                }
+
+            }
+
+            $('#submitbtn').click(function(){
+
+                dept_err = true;
+                departmentname_check();
+
+                if(dept_err == true){
+                return true;    
+                }
+                else{
+                return false;
+                }
+
+
+            }); 
+
+        });
+
+
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</body>
+
+</html>
