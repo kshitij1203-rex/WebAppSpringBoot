@@ -59,6 +59,34 @@
 
 
     <div class="container"  >
+        
+        <div class="row">
+            <div class="col-lg-3">
+                <a th:href="@{/vscode/employee/add-employee}" class="btn btn-success btn-sm mb-3">Add Employee</a>
+
+            </div>
+            <div class="col-lg-3">
+
+            
+                <!-- <select id="departmentlist">
+
+                    <option th:each="departmentName : ${departmentNames}" >
+                  
+                    <span th:text="${departmentName}" >
+
+                    </span>
+             
+                    </option>
+                </select> -->
+                <select id="departmentlist" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false" >
+                    <option>Select Departments</option>
+                    <option th:each="departmentName : ${departmentNames}"
+                     th:value="${departmentName}" th:text="${departmentName}">
+                    </option>
+                </select>
+            
+            </div>
+        </div>
     <div class="card-black">
 
         <table class="table table-striped table-bordered">
@@ -110,9 +138,36 @@
 <!-- Employee Name -->
 <!-- City -->
 
+<script>
+    document.getElementById("departmentlist").addEventListener("change", function() {
+        var selectedDepartment = this.value;
+        if (selectedDepartment !== "") {
+            window.location.href = "/vscode/employee/D?departments=" + selectedDepartment;
+        }
+    });
+</script>
 
-
-
+<script>
+    $('#departmentlist').on('change', function() {
+        $.ajax({
+                 url: '/vscode/employee?Id=',
+                 type: 'GET',
+                 data: {
+                     category: $(this).val()
+                 },
+                 success: function(employee) {
+                     // First, let's crear our tbody.
+                     $('#tallies').empty();
+     
+                     // Now, let's go through each one of the tallies.
+                     $(tallies).each( function() {
+                         // Here you should add your missing fields. I am just adding one as an example.
+                         $('#tallies').append('<tr><td><span>' + this.nominee + '</span></td></tr>');
+                     })
+                 }
+     })
+    })
+    </script>
 
 
 

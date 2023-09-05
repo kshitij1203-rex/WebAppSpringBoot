@@ -33,4 +33,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
            "JOIN d.loc l " +
            "WHERE d.deptname = :departmentName")
     List<Object[]> findDepartmentDataByName(@Param("departmentName") String departmentName);
+
+    Department findByDeptname(String departmentName);
 }

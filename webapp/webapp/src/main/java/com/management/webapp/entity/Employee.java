@@ -23,6 +23,7 @@ public class Employee {
     @Column(name="manager_id")
     private Integer manid;
     
+    
     @Column(name="first_name")
     private String fname;
 
@@ -57,9 +58,9 @@ public class Employee {
 
 
 
-    public Employee(String list, String lname, Integer empid, String email, String phonenumber, LocalDate hireDate,
+    public Employee(String fname, String lname, Integer empid, String email, String phonenumber, LocalDate hireDate,
             String jobid, BigDecimal salary, BigDecimal commissionPct, Department department) {
-        this.fname = list;
+        this.fname = fname;
         this.lname = lname;
         this.empid = empid;
         this.email = email;

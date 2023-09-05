@@ -133,6 +133,8 @@
                                 <label for="recipient-name" class="col-form-label">Department ID:</label>
                                 <input type="text" class="form-control"  id="IdEdit" name="IdEdit" readonly>
                             </div>
+
+                          
     
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Department Name:</label>
@@ -288,6 +290,7 @@
                     $.get(href, function (department, status) {
     
                         $('#IdEdit').val(department.departmentId);
+                    
                         $('#nameEdit').val(department.departmentName);
                         $('#firstnameEdit').val(department.managerName);
                         $('#cityEdit').val(department.city);

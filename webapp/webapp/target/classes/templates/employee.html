@@ -78,6 +78,7 @@
                     </option>
                 </select> -->
                 <select id="departmentlist" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false" >
+                   <option>Select Departments</option>
                     <option th:each="departmentName : ${departmentNames}"
                      th:value="${departmentName}" th:text="${departmentName}"></option>
                 </select>
@@ -228,12 +229,12 @@
                     <form th:action="@{/vscode/employee/move-manager}" method="post">
                         <div class="modal-body">
                             <p class="fw-bold">Employee Selected</p>
-                            <!-- <p class="px-2 py-1 w-100 form-control"  style="background: rgb(231, 231, 231);" th:text="${department.managerName}"></p> -->
+                            <p class="px-2 py-1 w-100 form-control"  style="background: rgb(231, 231, 231);" ></p>
         
                             <h4 class="fw-normal mt-3">From:</h4>
                             <hr class="my-3"/>
                             <p class="fw-bold">Department Name</p>
-                            <!-- <p class="px-2 py-1 w-100 form-control" style="background: lightgrey;"  th:text="${department.departmentName}"></p> -->
+                            <p class="px-2 py-1 w-100 form-control" style="background: lightgrey;"      ></p>
         
                             <h4 class="fw-normal mt-3">To Destination:</h4>
                             <hr class="my-3"/>

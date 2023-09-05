@@ -35,6 +35,8 @@ public class MyService {
     @Autowired
     public LocationRepository locationRepository;
 
+
+
     private final JdbcTemplate jdbcTemplate;
     private EntityManagerFactory entityManagerFactory;
 
@@ -93,34 +95,66 @@ public class MyService {
 
     // 4. Save method for add new entry will work in ADD-NEW-ENTRY Page
 
-    public void saveDepartment(MyDTO projectDTO) {
+    public boolean saveDepartment(MyDTO projectDTO) {
 
         Department department = new Department(projectDTO.getDepartmentName(), null, null);
         departmentRepository.save(department);
 
-        Location location = null;
+        
         if (projectDTO.getCity() != "") {
-            location = new Location(projectDTO.getCity(), null, null, null, null, null);
-            locationRepository.save(location);
+            Location city = locationRepository.findByCity(projectDTO.getCity());
+            if(city != null){
             List<Department> departments = new ArrayList<>();
             departments.add(department);
-            location.setDepartments(departments);
-            locationRepository.save(location);
-            department.setLoc(location);
+            city.setDepartments(departments);
+            locationRepository.save(city);
+            department.setLoc(city);
             departmentRepository.save(department);
+            
+            }
+            else{
+                return false;
+            }
         }
 
         List<Employee> employees = new ArrayList<>();
-        Employee manager = null;
+   
         if (projectDTO.getManagerName() != "") {
-            manager = new Employee(projectDTO.getManagerName(), null, null, null, null, null, null, null, null,
-                    department);
-            employees.add(manager);
-            employeeRepository.save(manager);
+            Employee emp = employeeRepository.findByFname(projectDTO.getManagerName());
+            if(emp != null){
+            Department dept = emp.getDepartment();
+            String[] empIds = dept.getEmployeeIds().split(",");
+            
+            ArrayList<String> empl = new ArrayList<>();
+            if(empIds.length>0){
+                for(int i=0 ; i<empIds.length; i++){
+                    if(!String.valueOf(emp.getManid()).equals(empIds[i]))
+                    {
+                        empl.add(empIds[i]);
+                    }
+                }
+                
+                 dept.setEmployeeIds(String.join(",", empl));
+
+            }
+           
+           departmentRepository.save(dept);
+           emp.setDepartment(department);
+           
+      
+            employees.add(emp);
+            employeeRepository.save(emp);
+
             department.setEmployees(employees);
             department.populateEmployeeIds();
             departmentRepository.save(department);
+            }
+            else{
+                return false;
+            }
+
         }
+        return true;
     }
     // ======================================================================================================
 
@@ -179,6 +213,57 @@ public class MyService {
         return null; // Department not found
     }
 
+    //==========================================================================
+
+    //5. Update Method for Department Page
+    // public Integer updateDepartment(MyDTO projectDTO) {
+
+    //     Employee emp = employeeRepository.findByFname(projectDTO.getManagerName());
+    //     System.out.println("employe name unidentified"+emp.getFname());
+    //         if(emp == null){
+    //             return 500;
+    //         }
+    //         else{
+    //             Department department = departmentRepository.findById(projectDTO.getDepartmentId())
+    //             .orElseThrow(() -> new EntityNotFoundException("Department not found"));
+    //             department.setEmployees((List<Employee>) emp);
+    //          return 200;
+    //         }
+    // }
+
+
+
+    //     public Department updateDepartmentDetailsFromDTO1(MyDTO dto) {
+    //     // Fetch the existing Department entity by ID
+    //     Department department = departmentRepository.findById(dto.getDepartmentId()).orElse(null);
+
+    //     if (department != null) {
+    //         // Update the department name
+    //         department.setDeptname(dto.getDepartmentName());
+
+            
+    //         // Fetch the manager (Employee) by manid and update the manager's first name
+    //         Employee manager = employeeRepository.findByFname(dto.getManagerName());
+
+    //         if (manager != null) {
+    //             manager.setFname(dto.getManagerName());
+    //             employeeRepository.save(manager);
+    //         }
+    //        Location locId = department.getLoc();
+    //         // Fetch the location (Location) by locid and update the location's city
+    //         Optional<Location> location = locationRepository.findById(locId.getLocid());
+    //         if (location.isPresent()) {
+    //             Location loc = location.get();
+    //             loc.setCity(dto.getCity());
+    //             locationRepository.save(loc);
+    //         }
+
+    //         // Save the updated department
+    //         return departmentRepository.save(department);
+    //     }
+
+    //     return null; // Department not found
+    // }
 
 
 
@@ -197,14 +282,21 @@ public class MyService {
             Employee anyEmployee = department.getEmployees().get(0);
             dto.setManagerName(anyEmployee.getFname());
 
+
+        }
+        
             if (department.getLoc() != null) {
                 dto.setCity(department.getLoc().getCity());
             }
-
-        }
         return dto;
     }
 
+    public void updateDepartment(Integer id, String managerName) {
+    }
+
     // ======================================================================================================
+    //add employee to department
+
+  
 
 }

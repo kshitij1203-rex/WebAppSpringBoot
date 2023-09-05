@@ -31,17 +31,23 @@ public class EmployeeService {
     @Autowired
     public LocationRepository locationRepository;
 
+    private final MyService myService;
+
+
+    
     public EmployeeService(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository,
-            LocationRepository locationRepository) {
+            LocationRepository locationRepository, MyService myService) {
         this.departmentRepository = departmentRepository;
         this.employeeRepository = employeeRepository;
         this.locationRepository = locationRepository;
+        this.myService = myService;
     }
-
     //=============================================================================================================
 
 
-    //1.
+
+
+        //1.
         public List<EmployeeDTO> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         List<EmployeeDTO> employeeDTOs = new ArrayList<>();
@@ -82,21 +88,53 @@ public class EmployeeService {
     //4.
 
 
-    public void addEmployeeToDepartment(String firstName, Integer departmentId) {
-        // Retrieve the department from the database
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new EntityNotFoundException("Department not found with ID: " + departmentId));
-    
-        // Create a new employee entity
-        Employee newEmployee = new Employee();
-        newEmployee.setFname(firstName);
-    
-        // Set the department for the new employee
-        newEmployee.setDepartment(department);
-    
-        // Save the new employee
-        employeeRepository.save(newEmployee);
-    }
+
+
+    // public void addEmployee(EmployeeDTO employeeDTO) {
+    //     // Create an Employee entity from the DTO
+    //     Employee employee = new Employee();
+    //     employee.setFname(employeeDTO.getManagerName());
+
+    //     // Find the department by name
+    //     Department department = departmentRepository.findByDeptname(employeeDTO.getDepartmentName());
+
+    //     // Set the department for the employee
+    //     employee.setDepartment(department);
+
+    //     // Save the employee to the database
+    //     employeeRepository.save(employee);
+    // }
+
+
+
+
+        public boolean saveEmployee(EmployeeDTO employeeDTO){
+            Department department = departmentRepository.findByDeptname(employeeDTO.getDepartmentName());
+            if(department != null && department.getDeptname() != null){
+            Employee employee = new Employee(employeeDTO.getManagerName(), null, null, null, null, null, null, null, null, null);
+            employeeRepository.save(employee);
+                 List<Employee> dEmployees = new ArrayList<>();
+                dEmployees.add(employee);
+                department.setEmployees(dEmployees);
+
+                String employeeid = department.getEmployeeIds()+","+employee.getManid();
+                
+                
+
+                department.setEmployeeIds(employeeid);
+                departmentRepository.save(department);
+                 employee.setDepartment(department);
+                employeeRepository.save(employee);
+                return true;
+            }
+            else{
+                return false;
+
+            }
+
+        }
+
+        
 
 //===================================================================================================================
 

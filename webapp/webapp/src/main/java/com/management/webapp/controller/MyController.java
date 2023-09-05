@@ -41,6 +41,7 @@ public class MyController {
     @Autowired
     private MyService myService;
 
+    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
@@ -111,8 +112,12 @@ public class MyController {
         @PostMapping("/vscode")
         public String saveDepartment( @ModelAttribute("projectDTO") MyDTO projectDTO) {
 
-        myService.saveDepartment(projectDTO);
+            if(myService.saveDepartment(projectDTO)){
+        
         return "redirect:/vscode";
+            }
+            return "redirect:/vscode";
+
         
          // Redirect to the department list page
     }
@@ -124,34 +129,68 @@ public class MyController {
 public MyDTO showDepartmentDetails(@RequestParam("Id") Integer Id, Model model) {
     MyDTO projectDTO = myService.getDepartmentById(Id);
 
-        return myService.getDepartmentById(Id); 
-    
+        return myService.getDepartmentById(Id);  
 }
 
 
 //=====================================================================================================
 
-@RequestMapping(value="/vscode/update", method = {RequestMethod.PUT, RequestMethod.GET})
-public RedirectView updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
-    
-    
-    // model.addAttribute("projectDTO", updatedDepartment);
+// @RequestMapping(value="/vscode/update", method = {RequestMethod.PUT, RequestMethod.GET})
+// public ResponseEntity<MyDTO> updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
+   
+//     Department myDTO =   myService.updateDepartmentDetailsFromDTO(projectDTO);
+//     return ResponseEntity.ok(HttpStatus.OK).body(myDTO);
 
-    // if (updatedDepartment != null) {
-    //     // Specify the view name
-    //     return new RedirectView("/vscode");
-    // } else {
-    //     return new RedirectView("/vscode?showModal=true");
-    // }
-    System.out.println("success");
-    return new RedirectView("/vscode");
-}
+// }
 
+//     model.addAttribute("projectDTO", updatedDepartment);
+
+//     if (updatedDepartment != null) {
+//         // Specify the view name
+//         return new RedirectView("/vscode");
+//     } else {
+//         return new RedirectView("/vscode?showModal=true");
+//     }
+
+
+// @RequestMapping(value="/vscode/update", method = {RequestMethod.PUT, RequestMethod.GET})
+// public String updateDepartmentDetails(@PathVariable(value="Id")@ModelAttribute MyDTO projectDTO, Model model) {
+   
+//      myService.updateDepartmentDetailsFromDTO(projectDTO);
+    
+//      Department updatedDepartment= myService.updateDepartmentDetailsFromDTO(projectDTO);
+//     model.addAttribute("projectDTO", updatedDepartment);
+//      return "redirect:/vscode";
+// }
+
+
+//  @RequestMapping(value="/vscode/update{id}", method = {RequestMethod.PUT, RequestMethod.GET})
+//     public ResponseEntity<String> updateDepartment(@PathVariable Integer id, @RequestBody MyDTO departmentDTO)throws Exception {
+//         System.out.println(departmentDTO.getManagerName());
+//         myService.updateDepartment(id, departmentDTO.getManagerName());
+//         String successmsg="department updated";
+//         ResponseEntity<String> response = new ResponseEntity<String>(successmsg, HttpStatus.OK);
+//         return response;
+        
+         
+//     }
+    //Update/Edit popup in Department Page
+//  @RequestMapping(value="/vscode/update", method = {RequestMethod.PUT, RequestMethod.GET})
+//     public String updateDepartment(@ModelAttribute("department") MyDTO departmentDTO) {
+//         System.out.println(departmentDTO.getManagerName());
+//         int Response = myService.updateDepartment(departmentDTO);
+//             if(Response == 200){
+//             return "redirect:/vscode1234";
+//             }
+//             else{
+//             return "redirect:/vscode99999999";
+//             }// Redirect to the department list page
+//     }
 
 //   @RequestMapping(value="/vscode/update", method = {RequestMethod.PUT, RequestMethod.GET})
 //         public String updateDepartmentDetails1( @ModelAttribute("projectDTO") MyDTO projectDTO) {
 
-//         myService.updateDepartmentDetailsFromDTO(projectDTO);
+//         myService.updateDepartmentDetailsFromDTO1(projectDTO);
 //         return "redirect:/vscode";
         
 //          // Redirect to the department list page
@@ -281,6 +320,8 @@ public RedirectView updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
          MyDTO departmentDTO = myService.getDepartmentById(departmentId);
          model.addAttribute("departments", departmentDTO);
 
+
+
         String sqlQuery = "SELECT department_name FROM vscode2.department";
         Query query = entityManager.createNativeQuery(sqlQuery);
         List<String> departmentNames = query.getResultList();
@@ -306,25 +347,29 @@ public RedirectView updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
         if (departmentName != null && !departmentName.isEmpty()) {
         List<Object[]> salesResults = departmentRepository.findDepartmentDataByName(departmentName);
         model.addAttribute("sales", salesResults);
-    }
 
+    }
+        String sqlQuery = "SELECT department_name FROM vscode2.department";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        List<String> departmentNames = query.getResultList();
+        model.addAttribute("departmentNames", departmentNames);
 
 
         return "dropdown"; // This corresponds to the name of your HTML template for the employee page
     }
 
-    // //     String sqlQuery2 = 
+    // String sqlQuery2 = 
     // "SELECT w1.department_name, w2.first_name, w3.city, w1.department_id 
     // FROM vscode2.department w1  
     // JOIN vscode2.employee w2 ON (w1.department_id = w2.department_id) 
     //  JOIN vscode2.location w3 USING (location_id) 
     //  WHERE w1.department_name = 'Human Resource';";
-    // //     Query query2 = entityManager.createNativeQuery(sqlQuery2);
-    // //     List<String> departmentNames1 = query2.getResultList();
-    // //     model.addAttribute("sales", departmentNames1);        
+    //     Query query2 = entityManager.createNativeQuery(sqlQuery2);
+    //     List<String> departmentNames1 = query2.getResultList();
+    //     model.addAttribute("sales", departmentNames1);        
         
-    // //     return "employee"; // Thymeleaf template name
-    // // }
+    //     return "employee"; // Thymeleaf template name
+    // }
 
 
      //==================================================================================================
@@ -340,16 +385,16 @@ public RedirectView updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
         // Prepare an empty ProjectDTO object for the form
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setManid(newDepartmentId);
-        model.addAttribute("projectDTO", employeeDTO);
+        model.addAttribute("employeeDTO", employeeDTO);
         
       
 
-        String sqlQuery = "SELECT department_name FROM vscode2.department";
-        Query query = entityManager.createNativeQuery(sqlQuery);
-        List<String> departmentNames = query.getResultList();
-        model.addAttribute("departmentNames", departmentNames);
+        // String sqlQuery = "SELECT department_name FROM vscode2.department";
+        // Query query = entityManager.createNativeQuery(sqlQuery);
+        // List<String> departmentNames = query.getResultList();
+        // model.addAttribute("departmentNames", departmentNames);
 
-        model.addAttribute("employeeDTO", new EmployeeDTO());
+        
         
         return "add-employee"; // Return the name of the HTML template
     }
@@ -362,7 +407,12 @@ public RedirectView updateDepartmentDetails(@RequestBody MyDTO projectDTO) {
         public String saveEmployee( @ModelAttribute("projectDTO") EmployeeDTO employeeDTO) {
 
         // employeeService.addEmployeeToDepartment(employeeDTO.getManid(), employeeDTO.getDepartmentId());
-     employeeService.addEmployeeToDepartment(employeeDTO.getManagerName(), employeeDTO.getDepartmentId());
+        boolean success =  employeeService.saveEmployee(employeeDTO);
+        if(success){
+            return "redirect:/vscode/allEmployees";
+        }
+
+       
         return "redirect:/vscode/allEmployees";
         
          // Redirect to the department list page

@@ -54,7 +54,7 @@
                 <h1 class="text-center">Add Employee Entry</h1>
                 <hr>
                 <div class="card-body">
-                    <form th:action="@{/vscode/allEmployees}" th:object="${projectDTO}" method="post">
+                    <form th:action="@{/vscode/allEmployees}" th:object="${employeeDTO}" method="post">
 
                    
 
@@ -65,25 +65,21 @@
 
                                 <input type="text" name="manid" th:field="*{manid}" class="form-control" value="${manid}" readonly
                                 placeholder="id" />
-                            
-                
                             </div>
-
-                            
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label> Department Name </label>
-                     
-
                                 <select class="w-100 btn btn-secondary dropdown-toggle" type="button" id="dropdownList" data-bs-toggle="dropdown" aria-expanded="false">
                                     <option th:each="departmentName : ${departmentNames}"
                                      th:value="${departmentName}" th:text="${departmentName}"></option>
                                 </select>
                            
+                            </div> -->
+                            <div class="form-group">
+                                <label> Department Name </label>
+                                <input type="text" id="departmentName" name="departmentName" th:field="*{departmentName}" class="form-control" placeholder="Enter Department Name" autocomplete="off"  />
+                                <h6 id="deptcheck"></h6>
+                                <span id="lblError" style="color: red"></span>
                             </div>
-
- 
-
-                        </div>
                         <br>
                             <div class="form-group">
                             <label> Employee Name </label>
